@@ -14,7 +14,7 @@ def analyze_resume(resume_text, job_description):
     """
     try:
         # Initialize the model
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        model = genai.GenerativeModel('gemini-2.0-flash')
         
         prompt = f"""
         You are an expert HR Manager. 
