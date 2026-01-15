@@ -1,6 +1,6 @@
 import streamlit as st
 from services.pdf_parser import extract_text_from_pdf
-from services.ai_handler import analyze_resume
+from services.ai_handler import analyze_resume, generate_improved_resume
 
 # Application Page Configuration
 st.set_page_config(page_title="AI Resume Optimizer", page_icon="🚀")
@@ -15,18 +15,31 @@ uploaded_file = st.sidebar.file_uploader("Upload your Resume (PDF)", type=["pdf"
 # Main area for Job Description
 job_description = st.text_area("Paste the Job Description here:", height=300)
 
-if st.button("Analyze Resume"):
+# Create two columns for buttons
+col1, col2 = st.columns(2)
+
+with col1:
+    analyze_btn = st.button("Analyze Match")
+with col2:
+    generate_btn = st.button("Generate New Resume")
+
+if analyze_btn:
     if uploaded_file and job_description:
-        with st.spinner("Analyzing... Please wait."):
-            # 1. Extract text from PDF
+        with st.spinner("Analyzing..."):
             resume_text = extract_text_from_pdf(uploaded_file)
-            
-            # 2. Call AI Handler
-            analysis_result = analyze_resume(resume_text, job_description)
-            
-            # 3. Display Result
-            st.success("Analysis Complete!")
-            st.markdown("### AI Analysis Report")
-            st.write(analysis_result)
+            report = analyze_resume(resume_text, job_description)
+            st.markdown("### 📊 Analysis Report")
+            st.info(report)
     else:
-        st.error("Please upload a resume and paste a job description.")
+        st.warning("Please upload a PDF and paste a JD.")
+
+if generate_btn:
+    if uploaded_file and job_description:
+        with st.spinner("Rewriting your resume..."):
+            resume_text = extract_text_from_pdf(uploaded_file)
+            new_resume = generate_improved_resume(resume_text, job_description)
+            st.markdown("### ✨ Optimized Resume Content")
+            st.text_area("Copy your new resume from here:", value=new_resume, height=500)
+            st.download_button("Download as Text", new_resume, file_name="improved_resume.txt")
+    else:
+        st.warning("Please upload a PDF and paste a JD.")
