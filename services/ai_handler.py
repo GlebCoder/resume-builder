@@ -16,6 +16,12 @@ def analyze_resume(resume_text, job_description):
     You are an expert HR Manager. 
     Analyze this Resume against the Job Description.
     
+    IMPORTANT: Start your response with "Score: [number]%" 
+    
+    Resume: {resume_text}
+    JD: {job_description}
+    # ... rest of the prompt
+    
     Resume: {resume_text}
     JD: {job_description}
     
