@@ -73,3 +73,37 @@ def generate_improved_resume(resume_text, job_description):
         return response.text
     except Exception as e:
         return f"Error during generation: {str(e)}"
+    
+def generate_cover_letter(resume_text, job_description):
+    """
+    Generates a professional cover letter based on resume and job description.
+    """
+    client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+    
+    prompt = f"""
+    You are a professional Career Coach. Write a compelling Cover Letter 
+    that connects the candidate's experience to the specific needs of the job.
+    
+    INSTRUCTIONS:
+    - Focus on how the candidate's skills solve the company's problems.
+    - Use a professional yet enthusiastic tone.
+    - Keep it concise (3-4 paragraphs).
+    - Use placeholders like [Hiring Manager Name] where appropriate.
+    
+    ---
+    CANDIDATE RESUME:
+    {resume_text}
+    
+    ---
+    JOB DESCRIPTION:
+    {job_description}
+    """
+    
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
+        )
+        return response.text
+    except Exception as e:
+        return f"Cover Letter Error: {str(e)}"
