@@ -2,6 +2,7 @@ import streamlit as st
 import re
 from services.pdf_parser import extract_text_from_pdf
 from services.ai_handler import analyze_resume, generate_improved_resume, generate_cover_letter
+from services.pdf_generator import create_pdf
 
 # Application Page Configuration
 st.set_page_config(page_title="AI Resume Optimizer", page_icon="🚀")
@@ -43,12 +44,27 @@ if st.button("🚀 Process My Application", use_container_width=True):
             with tab2:
                 new_resume = generate_improved_resume(resume_text, job_description)
                 st.code(new_resume, language="markdown")
-                st.download_button("Download Resume", new_resume, file_name="resume_v2.txt")
+                
+                # PDF Generation
+                resume_pdf = create_pdf(new_resume)
+                st.download_button(
+                    label="📥 Download Resume as PDF",
+                    data=bytes(resume_pdf),
+                    file_name="improved_resume.py.pdf",
+                    mime="application/pdf"
+                )
                 
             with tab3:
                 letter = generate_cover_letter(resume_text, job_description)
                 st.markdown("### Generated Cover Letter")
                 st.write(letter)
-                st.download_button("Download Letter", letter, file_name="cover_letter.txt")
-    else:
+                
+                # PDF Generation
+                letter_pdf = create_pdf(letter)
+                st.download_button(
+                    label="📥 Download Letter as PDF",
+                    data=bytes(letter_pdf),
+                    file_name="cover_letter.pdf",
+                    mime="application/pdf"
+                )
         st.warning("Please upload your resume and paste the job description first.")
